@@ -1,0 +1,7 @@
+average-serial
+average-mpi-ppv1
+average-mpi-ppv2
+bucket_average-serial
+bucket_average-mpi
+*.out
+*.pdf
