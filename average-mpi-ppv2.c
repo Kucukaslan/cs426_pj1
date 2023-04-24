@@ -55,23 +55,6 @@ int main(int argc, char *argv[])
             // printf("Sent %d to %d of %d\n", numbers[0], i, size);
         }
 
-        // int remaining = tot_count - count * (size - 1);
-        // int *numbers = (int *)malloc(count * sizeof(int));
-        // for (int i = 0; i < remaining; i++)
-        // {
-        //     fscanf(fd, "%d", &numbers[i]);
-        // }
-        // fclose(fd);
-        // printf("%d: call reduce\n", rank);
-        // MPI_Allreduce(numbers, &sum, remaining, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-        // int local_sum = 0;
-        // for (int i = 0; i < remaining; i++)
-        // {
-        //     local_sum += numbers[i];
-        //     // printf("%d: received %d, local sum %d\n", rank, numbers[i], local_sum);
-        // }
-        // printf("%d: all reduce sum %d; loc sum: %d\n", rank, sum, local_sum);
-        // compute the sum of remaining numbers
         int tmp = 0;
         for (int i = count * (size - 1); i < tot_count; i++)
         {
@@ -82,15 +65,6 @@ int main(int argc, char *argv[])
         fclose(fd);
         MPI_Allreduce(&tmp, &sum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
-        // // printf("Receiving local sums . . .%d\n", sum);
-        // int local_sum = 0;
-        // for (i = 1; i < size; i++)
-        // {
-        //     MPI_Recv((void *)&local_sum, 1, MPI_INT, i, 0xACE5, MPI_COMM_WORLD, &s);
-        //     // printf("local sum: [%d] sent %d\n", i, local_sum);
-        //     sum += local_sum;
-        // }
-        // printf("The average is %f", 1.0 * sum / tot_count);
         printf("%f\n", 1.0 * sum / tot_count);
     }
     else
@@ -117,11 +91,6 @@ int main(int argc, char *argv[])
         }
         MPI_Allreduce(&local_sum, &sum, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
         // printf("%d: all redmuce sum %d; loc sum: %d\n", rank, sum, local_sum);
-
-        // // send the local sum to the master process
-        // // printf("%d Sending local sum %d to master\n", rank, local_sum);
-        // MPI_Send((void *)&local_sum, 1, MPI_INT, 0, 0xACE5, MPI_COMM_WORLD);
-        // // printf("%d Sent local sum %d to master\n", rank, local_sum);
     }
 
     MPI_Finalize();

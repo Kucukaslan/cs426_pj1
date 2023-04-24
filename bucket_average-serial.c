@@ -39,9 +39,9 @@ int main(int argc, char **argv)
             max = bucket;
     }
 
-    int count = max - min + 1;
-    int *sums = (int *)malloc(count * sizeof(int));
-    int *counts = (int *)malloc(count * sizeof(int));
+    int range = max - min + 1;
+    int *sums = (int *)malloc(range * sizeof(int));
+    int *counts = (int *)malloc(range * sizeof(int));
     rewind(fd);
 
     while (fscanf(fd, "%d %d", &bucket, &key) != EOF)
@@ -52,14 +52,14 @@ int main(int argc, char **argv)
 
     FILE *outfd = fopen(argv[2], "w");
     float avg;
-    for (int i = 0; i < count - 1; i++)
+    for (int i = 0; i < range - 1; i++)
     {
         avg = (float)sums[i] / counts[i];
         // printf("%d/%d = %f\n", sums[i], counts[i], avg);
         fprintf(outfd, "%.1f\n", avg);
     }
     // last line
-    avg = (float)sums[count - 1] / counts[count - 1];
+    avg = (float)sums[range - 1] / counts[range - 1];
     fprintf(outfd, "%.1f", avg);
 
     fclose(fd);

@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
          sum += local_sum;
       }
       // printf("The average is %f", 1.0 * sum / tot_count);
-      printf("%f", 1.0 * sum / tot_count);
+      printf("%f\n", 1.0 * sum / tot_count);
    }
    else
    {
