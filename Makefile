@@ -38,6 +38,13 @@ zip:
 	time mpirun --oversubscribe -np 32 average-mpi-ppv1 a_100_000
 	time mpirun --oversubscribe -np 32 average-mpi-ppv2 a_100_000
 
+1m:
+	time ./average-serial a_1m
+	time mpirun --oversubscribe -np 16 average-mpi-ppv1 a_1m
+	time mpirun --oversubscribe -np 16 average-mpi-ppv2 a_1m
+	time mpirun --oversubscribe -np 32 average-mpi-ppv1 a_1m
+	time mpirun --oversubscribe -np 32 average-mpi-ppv2 a_1m
+
 10m:
 	time ./average-serial a_10_000_000
 	time mpirun --oversubscribe -np 16 average-mpi-ppv1 a_10_000_000
@@ -45,4 +52,34 @@ zip:
 	time mpirun --oversubscribe -np 32 average-mpi-ppv1 a_10_000_000
 	time mpirun --oversubscribe -np 32 average-mpi-ppv2 a_10_000_000
 
+b100k:
+	time ./bucket_average-serial b_100k out.txt
+	time mpirun --oversubscribe -np  4 bucket_average-mpi b_100k out.txt
+	time mpirun --oversubscribe -np  8 bucket_average-mpi b_100k out.txt
+	time mpirun --oversubscribe -np 16 bucket_average-mpi b_100k out.txt
+	time mpirun --oversubscribe -np 32 bucket_average-mpi b_100k out.txt
 
+b1m:
+	time ./bucket_average-serial b_1m  out.txt
+	time mpirun --oversubscribe -np  4 bucket_average-mpi b_1m out.txt
+	time mpirun --oversubscribe -np  8 bucket_average-mpi b_1m out.txt
+	time mpirun --oversubscribe -np 16 bucket_average-mpi b_1m out.txt
+	time mpirun --oversubscribe -np 32 bucket_average-mpi b_1m out.txt
+
+b10m:
+	time ./bucket_average-serial b_10m out.txt
+	time mpirun --oversubscribe -np  4 bucket_average-mpi b_10m out.txt 
+	time mpirun --oversubscribe -np  8 bucket_average-mpi b_10m out.txt 
+	time mpirun --oversubscribe -np 16 bucket_average-mpi b_10m out.txt 
+	time mpirun --oversubscribe -np 32 bucket_average-mpi b_10m out.txt
+
+b10k:
+	time ./bucket_average-serial b_10k out.txt
+	time mpirun --oversubscribe -np  4 bucket_average-mpi b_10k out.txt 
+	time mpirun --oversubscribe -np  8 bucket_average-mpi b_10k out.txt 
+	time mpirun --oversubscribe -np 16 bucket_average-mpi b_10k out.txt 
+	time mpirun --oversubscribe -np 32 bucket_average-mpi b_10k out.txt
+
+time:
+	which time
+	which -a time

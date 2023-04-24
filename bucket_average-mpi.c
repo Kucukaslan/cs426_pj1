@@ -75,10 +75,10 @@ int main(int argc, char **argv)
         {
             displs[i] = displs[i - 1] + sendcounts[i - 1];
         }
-
-        buckets = (int *)malloc(count * sizeof(int));
-        keys = (int *)malloc(count * sizeof(int));
     }
+    buckets = (int *)malloc(count * sizeof(int));
+    keys = (int *)malloc(count * sizeof(int));
+
     MPI_Bcast(sendcounts, size, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(displs, size, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -96,8 +96,8 @@ int main(int argc, char **argv)
         fclose(fd);
     }
 
-    int *recvB = (int *)malloc(count * sizeof(int));
-    int *recvK = (int *)malloc(count * sizeof(int));
+    int *recvB = (int *)malloc(sendcounts[rank] * sizeof(int));
+    int *recvK = (int *)malloc(sendcounts[rank] * sizeof(int));
 
     MPI_Scatterv(buckets, sendcounts, displs, MPI_INT, recvB, sendcounts[rank], MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Scatterv(keys, sendcounts, displs, MPI_INT, recvK, sendcounts[rank], MPI_INT, 0, MPI_COMM_WORLD);
@@ -135,28 +135,40 @@ int main(int argc, char **argv)
     // reduce the sums and counts
     int *sumsAll = (int *)malloc(range * sizeof(int));
     int *countsAll = (int *)malloc(range * sizeof(int));
+    // initialize sums and counts
+    for (int i = 0; i < range; i++)
+    {
+        sumsAll[i] = 0;
+        countsAll[i] = 0;
+    }
     MPI_Reduce(sums, sumsAll, range, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Reduce(counts, countsAll, range, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    // print the averages
-    FILE *outfd = fopen(argv[2], "w");
-    float avg;
-    for (int i = 0; i < range - 1; i++)
-    {
-        avg = (float)sumsAll[i] / countsAll[i];
-        // printf("%d:%d %d/%d = %f\n", rank, i + min, sumsAll[i], countsAll[i], avg);
-        fprintf(outfd, "%.1f\n", avg);
-    }
-    avg = (float)sumsAll[range - 1] / countsAll[range - 1];
-    // printf("%d:%d %d/%d = %f\n", rank, range - 1 + min, sumsAll[range - 1], countsAll[range - 1], avg);
-    fprintf(outfd, "%.1f", avg);
-    fclose(outfd);
-
     if (rank == 0)
     {
-        free(buckets);
-        free(keys);
+        // print the averages
+        FILE *outfd = fopen(argv[2], "wt+");
+        float avg;
+        for (int i = 0; i < range - 1; i++)
+        {
+            if (countsAll[i] == 0)
+            {
+                printf("%d there is no element in bucket %d, sum is 0, count is 0, average is 0\n", rank, i + min);
+                fprintf(outfd, "0.0\n");
+                continue;
+            }
+            avg = (float)sumsAll[i] / countsAll[i];
+            // printf("%d:%d %d/%d = %f\n", rank, i + min, sumsAll[i], countsAll[i], avg);
+            fprintf(outfd, "%.1f\n", avg);
+        }
+        avg = (float)sumsAll[range - 1] / countsAll[range - 1];
+        // printf("%d:%d %d/%d = %f\n", rank, range - 1 + min, sumsAll[range - 1], countsAll[range - 1], avg);
+        fprintf(outfd, "%.1f", avg);
+        fclose(outfd);
     }
+
+    free(buckets);
+    free(keys);
     free(recvB);
     free(recvK);
     free(sums);
