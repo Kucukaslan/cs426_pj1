@@ -19,7 +19,7 @@ bsr:bucket_average-serial.c
 
 bmpi:bucket_average-mpi.c
 	mpicc bucket_average-mpi.c -o  bucket_average-mpi
-	mpirun --oversubscribe -np 4 bucket_average-mpi inputb outputbmpi.txt
+	mpirun --oversubscribe -np 3 bucket_average-mpi inputb outputbmpi.txt
 
 clear:
 	@rm -f bucket_average-serial average-mpi-ppv1 average-mpi-ppv2 average-serial a.out
