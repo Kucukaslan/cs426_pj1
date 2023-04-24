@@ -25,6 +25,12 @@ int main(int argc, char *argv[])
 
         fd = fopen(argv[1], "r");
 
+        if (fd == NULL)
+        {
+            printf("Error: cannot open file %s \n", argv[1]);
+            return 1;
+        }
+
         int tot_count = 0;
         int sum = 0;
         fscanf(fd, "%d", &tot_count);
